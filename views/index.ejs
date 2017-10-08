@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Facebook Wall Insights</title>
+  <title>What Next?</title>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="ct" content="<$= ct $>">
-  <link rel="shortcut icon" href="/images/fbinsightsicon.png" type="image/x-icon">
-  <link rel="icon" href="/images/fbinsightsicon.png" type="image/x-icon">
+  <!--<link rel="shortcut icon" href="/images/fbinsightsicon.png" type="image/x-icon">-->
+  <!--<link rel="icon" href="/images/fbinsightsicon.png" type="image/x-icon">-->
   <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript" src="https://www.google.com/recaptcha/api.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
@@ -49,7 +49,7 @@
 
     window.fbAsyncInit = function() {
     FB.init({
-      appId      : '1659262794346941',
+      appId      : '137855180172823',
       cookie     : true,  // enable cookies to allow the server to access
                           // the session
       xfbml      : true,  // parse social plugins on this page
@@ -92,7 +92,7 @@
     }
     function getFBPosts() {
 
-      var posts;
+      window.posts;
       FB.api(
         '/me/feed?limit=1000',
         'GET',
@@ -104,33 +104,71 @@
             if(post === undefined || post === null){
               post = " ";
             }
-            posts+="\n "+post;
+            window.posts+="\n "+post;
           }
-          document.getElementById('inputText').value = posts.replace("undefined", "");
-          console.log("got posts: "+posts);
+          document.getElementById('inputText').value = window.posts.replace("undefined", "");
+          console.log("got posts: "+window.posts);
             // Insert your code here
+            localStorage.setItem("fbPosts",JSON.stringify(window.posts));
         }
       );
     }
   </script>
 
+  <script>
+      function createCookie(name,value,days) {
+          var expires = "";
+          if (days) {
+              var date = new Date();
+              date.setTime(date.getTime() + (days*24*60*60*1000));
+              expires = "; expires=" + date.toUTCString();
+          }
+          document.cookie = name + "=" + value + expires + "; path=/";
+      }
 
+      function readCookie(name) {
+          var nameEQ = name + "=";
+          var ca = document.cookie.split(';');
+          for(var i=0;i < ca.length;i++) {
+              var c = ca[i];
+              while (c.charAt(0)==' ') c = c.substring(1,c.length);
+              if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+          }
+          return null;
+      }
+
+      function eraseCookie(name) {
+          createCookie(name,"",-1);
+      }
+
+      function persistToLocalStorage() {
+          window.t = $.get('profileAnalysis');
+          localStorage.setItem("personalityAnalysis", "");
+          setTimeout(function(){
+              localStorage.setItem("personalityAnalysis", JSON.stringify(t.responseJSON));
+          }, 2000);
+          console.log(t.responseJSON);
+
+          setTimeout(function() {
+              createCookie('personalityAnalysis', JSON.stringify(t.responseJSON), 7);
+          }, 5000);
+      }
+  </script>
 
   <div class="_demo--banner">
     <div class="_demo--container">
-      <div class="banner--service-icon-container">
-        <img class="banner--service-icon" src="images/fbinsightsicon.png" alt="Personality Insights API Icon">
-      </div>
-      <div class="banner--service-info">
-        <h1 class="banner--service-title base--h1">
-          <img class="banner--service-icon_INLINE" src="images/fbinsightsicon.png" alt="Personality Insights API Icon"> Facebook Wall Insights
+      <!--<div class="banner&#45;&#45;service-icon-container">-->
+        <!--&lt;!&ndash;<img class="banner&#45;&#45;service-icon" src="images/fbinsightsicon.png" alt="Personality Insights API Icon">&ndash;&gt;-->
+      <!--</div>-->
+      <div class="banner--service-info" style="color: #0d1111">
+        <h1 class="banner--service-title base--h1" style="color: #0d1111">
+          <img class="banner--service-icon_INLINE" src="images/fbinsightsicon.png" alt="Personality Insights API Icon"> What Next?
         </h1>
         <div class="banner--service-description">
-          Find out what your Facebook wall says about you with IBM's amazing Personality Insights service!
           For statistically significant results, you need at least 3500 words and ideally 6000.
           You can still try this out if you have at least 100 words, but the results may not be as accurate.
           <br/>
-          How to use: Click the "Log In" button and login with your Facebook credentials, let the big text box fill with your Facebook posts, and then click the "Analyze" button to show results below the text box.
+
         </div>
       </div>
     </div>
@@ -164,7 +202,7 @@
                   <label class="base--inline-label" for="lang-ar" style="display:none;">Arabic</label>
                 </div>
 
-                <button type="submit" class="base--button input--submit-button2">Analyze</button>
+                <button type="submit" class="base--button input--submit-button2" onclick="persistToLocalStorage()">Analyze</button>
               </div>
 
             </form>
@@ -173,6 +211,16 @@
       </div>
     </div>
   </div>
+
+  <div class="_demo--container">
+    <script type="text/javascript">
+      function visitPage(){
+          window.location='http://localhost:8080';
+      }
+    </script>
+      <button class="base--button input--submit-button2" onclick="visitPage();">Talk to the What Next Bot</button>
+  </div>
+
 
   <div class="_demo--bg-container">
     <div class="_demo--container">
